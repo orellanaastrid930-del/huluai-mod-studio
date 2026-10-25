@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101218">
+    <title>HuluAI Mod Studio</title>
+
+    <style>
+        :root {
+            --bg: #101218;
+            --panel: #191c25;
+            --panel2: #202430;
+            --text: #f5f6fa;
+            --muted: #969daf;
+            --green: #91f7b2;
+            --border: #2c303d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, system-ui, Arial, sans-serif;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        header {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            border-bottom: 1px solid var(--border);
+            background: #101218;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--green);
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        .btn {
+            border: 0;
+            padding: 11px 17px;
+            border-radius: 10px;
+            font-weight: 750;
+            background: var(--green);
+            color: #101218;
+        }
+
+        .btn:hover {
+            filter: brightness(.92);
+        }
+
+        .btn.secondary {
+            background: var(--panel2);
+            color: white;
+            border: 1px solid var(--border);
+        }
+
+        .hero {
+            padding: 75px 6% 55px;
+            background:
+                radial-gradient(ellipse at 85% 10%, #31553b50, transparent 45%),
+                radial-gradient(ellipse at 10% 100%, #253d7040, transparent 50%);
+        }
+
+        .badge {
+            display: inline-block;
+            color: var(--green);
+            background: #91f7b212;
+            border: 1px solid #91f7b238;
+            border-radius: 30px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .hero h1 {
+            max-width: 750px;
+            margin: 22px 0 15px;
+            font-size: clamp(38px, 6vw, 68px);
+            line-height: 1.06;
+            letter-spacing: -3px;
+        }
+
+        .hero h1 span {
+            color: var(--green);
+        }
+
+        .hero p {
+            color: var(--muted);
+            max-width: 580px;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 27px;
+        }
+
+        .search-wrap {
+            max-width: 550px;
+            margin-top: 32px;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            background: #191c25;
+            border: 1px solid #363b48;
+            border-radius: 12px;
+            padding: 15px 17px;
+            color: white;
+            outline: none;
+        }
+
+        .search-wrap input:focus {
+            border-color: var(--green);
+        }
+
+        main {
+            padding: 0 6% 70px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin: 34px 0 20px;
+        }
+
+        .section-head h2 {
+            margin: 0;
+            font-size: 23px;
+            letter-spacing: -.7px;
+        }
+
+        .section-head p {
+            margin: 6px 0 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .categories {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-bottom: 23px;
+        }
+
+        .chip {
+            background: var(--panel);
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 9px 14px;
+        }
+
+        .chip.active,
+        .chip:hover {
+            background: #91f7b21a;
+            border-color: #91f7b269;
+            color: var(--green);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform .2s, border-color .2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #596271;
+        }
+
+        .art {
+            min-height: 155px;
+            display: grid;
+            place-items: center;
+            font-size: 65px;
+            position: relative;
+            background: linear-gradient(135deg, #203a32, #253b59);
+        }
+
+        .art.purple {
+            background: linear-gradient(135deg, #42275a, #734b6d);
+        }
+
+        .art.orange {
+            background: linear-gradient(135deg, #593a21, #8b563b);
+        }
+
+        .art.blue {
+            background: linear-gradient(135deg, #1d3d5b, #315e7b);
+        }
+
+        .art.red {
+            background: linear-gradient(135deg, #54252d, #8b3d42);
+        }
+
+        .art.teal {
+            background: linear-gradient(135deg, #174a49, #287c71);
+        }
+
+        .tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #101218d9;
+            color: var(--green);
+            border: 1px solid #ffffff20;
+            border-radius: 7px;
+            padding: 5px 8px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .card-content {
+            padding: 16px;
+        }
+
+        .card-content h3 {
+            margin: 0 0 8px;
+            font-size: 17px;
+        }
+
+        .card-content p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 41px;
+            margin: 0 0 17px;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 13px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .creator {
+            color: #d6d9e2;
+        }
+
+        .empty {
+            display: none;
+            padding: 40px 10px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .create-banner {
+            margin-top: 65px;
+            padding: 35px;
+            border-radius: 18px;
+            border: 1px solid #91f7b233;
+            background: linear-gradient(120deg, #1b3026, #1b202a 70%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .create-banner h2 {
+            margin: 0 0 9px;
+        }
+
+        .create-banner p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        footer {
+            padding: 27px 6%;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            background: #000b;
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-box {
+            width: min(500px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 25px;
+        }
+
+        .modal-box h2 {
+            margin-top: 0;
+        }
+
+        .modal-box label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin: 15px 0 7px;
+        }
+
+        .modal-box input,
+        .modal-box select,
+        .modal-box textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 9px;
+        }
+
+        .modal-box textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .status {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--green);
+            margin-top: 14px;
+        }
+
+        @media (max-width: 850px) {
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            nav {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 580px) {
+            header {
+                padding: 0 4%;
+                height: 64px;
+            }
+
+            nav a {
+                display: none;
+            }
+
+            .hero {
+                padding: 55px 5% 40px;
+            }
+
+            .hero h1 {
+                letter-spacing: -1.8px;
+            }
+
+            main {
+                padding: 0 5% 50px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .art {
+                min-height: 180px;
+            }
+
+            .create-banner {
+                padding: 24px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .section-head {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">HuluAI <span>MOD STUDIO</span></div>
+
+        <nav>
+            <a href="#discover">Discover</a>
+            <a href="#creator">AI Creator</a>
+            <button class="btn secondary" id="loginButton">Login / Sign up</button>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <span class="badge">✦ YOUR WORLD. YOUR CREATION.</span>
+
+        <h1>Minecraft has no limits.<br><span>Neither do you.</span></h1>
+
+        <p>
+            Discover community addons, explore new worlds, and create your own
+            Minecraft Bedrock experiences with HuluAI.
+        </p>
+
+        <div class="hero-actions">
+            <button class="btn" id="createButton">✦ Create Your Mod</button>
+            <button class="btn secondary" id="exploreButton">Explore Addons ↓</button>
+        </div>
+
+        <div class="search-wrap">
+            <input id="search" type="search"
+      placeholder="Search addons, dimensions, mobs, creators...">
+        </div>
+    </section>
+
+    <main id="discover">
+        <div class="section-head">
+            <div>
+                <h2>Discover Addons</h2>
+                <p>Find your next Minecraft adventure.</p>
+            </div>
+
+            <button class="btn secondary" id="postButton">＋ Create Post</button>
+        </div>
+
+        <div class="categories" id="categories">
+            <button class="chip active" data-category="All">All</button>
+            <button class="chip" data-category="Dimensions">Dimensions</button>
+            <button class="chip" data-category="Mobs">Mobs & Bosses</button>
+            <button class="chip" data-category="Items">Items & Weapons</button>
+            <button class="chip" data-category="Survival">Survival</button>
+            <button class="chip" data-category="Textures">Textures</button>
+        </div>
+
+        <div class="grid" id="addonGrid"></div>
+        <div class="empty" id="empty">No matching addons. Try another search.</div>
+
+        <section class="create-banner" id="creator">
+            <div>
+                <span class="badge">HULUAI AI CREATOR</span>
+                <h2 style="margin-top:16px">Don't just play Minecraft. Reinvent it.</h2>
+                <p>
+                    Create mobs, weapons, dimensions, biomes, structures, and eventually
+                    entire addons from one description.
+                </p>
+            </div>
+            <button class="btn" id="everythingButton">Create Everything ↗</button>
+        </section>
+    </main>
+
+    <footer>
+        <span>© 2026 HuluAI Mod Studio</span>
+        <span>Built for Minecraft Bedrock creators · Free creation vision</span>
+    </footer>
+
+    <div class="modal" id="modal">
+        <div class="modal-box">
+            <h2 id="modalTitle">Create with HuluAI</h2>
+            <p style="color:var(--muted);font-size:13px;line-height:1.6" id="modalDescription">
+                Describe what you want to create.
+            </p>
+
+            <form id="creatorForm">
+                <label for="projectName">Project name</label>
+                <input id="projectName" placeholder="Example: The Shadow Dimension" required>
+
+                <label for="projectType">What do you want to create?</label>
+                <select id="projectType">
+        <option>Complete Mod — Create Everything</option>
+        <option>New Dimension</option>
+        <option>Mobs and Bosses</option>
+        <option>Weapons and Items</option>
+        <option>Biomes and Structures</option>
+        <option>Textures and Resources</option>
+        <option>Survival Addon</option>
+      </select>
+
+                <label for="projectDescription">Describe your idea</label>
+                <textarea id="projectDescription"
+        placeholder="Describe the world, features, creatures, abilities, and gameplay..."
+        required></textarea>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn">Prepare Project</button>
+                    <button type="button" class="btn secondary" id="closeModal">Cancel</button>
+                </div>
+            </form>
+
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        const addons = [
+  {
+    name: "The Forgotten Dimension",
+    category: "Dimensions",
+    icon: "🌌",
+    style: "purple",
+    description: "Explore a mysterious realm filled with strange landscapes.",
+    creator: "Community Creator",
+    downloads: "Dimension"
+  },
+  {
+    name: "Abyssal Bosses",
+    category: "Mobs",
+    icon: "🐉",
+    style: "red",
+    description: "Face powerful creatures and challenging boss battles.",
+    creator: "Community Creator",
+    downloads: "Mobs & Bosses"
+  },
+  {
+    name: "Crystal Arsenal",
+    category: "Items",
+    icon: "⚔️",
+    style: "blue",
+    description: "Imagine a new collection of crystal-powered equipment.",
+    creator: "Community Creator",
+    downloads: "Items & Weapons"
+  },
+  {
+    name: "Wild Survival",
+    category: "Survival",
+    icon: "🌲",
+    style: "teal",
+    description: "A survival-themed concept for your next adventure.",
+    creator: "Community Creator",
+    downloads: "Survival"
+  },
+  {
+    name: "Mystic Realms",
+    category: "Dimensions",
+    icon: "🔮",
+    style: "purple",
+    description: "Discover magical worlds and mysterious environments.",
+    creator: "Community Creator",
+    downloads: "Dimension"
+  },
+  {
+    name: "Ancient Relics",
+    category: "Textures",
+    icon: "💎",
+    style: "orange",
+    description: "A fantasy-inspired visual theme for your world.",
+    creator: "Community Creator",
+    downloads: "Textures"
+  }
+];
+
+let selectedCategory = "All";
+
+const grid = document.getElementById("addonGrid");
+const search = document.getElementById("search");
+const empty = document.getElementById("empty");
+const modal = document.getElementById("modal");
+const status = document.getElementById("status");
+
+function renderAddons() {
+  const term = search.value.toLowerCase();
+
+  const filtered = addons.filter(addon => {
+    const matchesCategory =
+      selectedCategory === "All" || addon.category === selectedCategory;
+
+    const text = (
+      addon.name + " " +
+      addon.category + " " +
+      addon.description + " " +
+      addon.creator
+    ).toLowerCase();
+
+    return matchesCategory && text.includes(term);
+  });
+
+  grid.innerHTML = "";
+
+  filtered.forEach(addon => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const art = document.createElement("div");
+    art.className = "art " + addon.style;
+    art.textContent = addon.icon;
+
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = addon.category;
+    art.appendChild(tag);
+
+    const content = document.createElement("div");
+    content.className = "card-content";
+
+    const title = document.createElement("h3");
+    title.textContent = addon.name;
+
+    const description = document.createElement("p");
+    description.textContent = addon.description;
+
+    const bottom = document.createElement("div");
+    bottom.className = "card-bottom";
+
+    const creator = document.createElement("span");
+    creator.className = "creator";
+    creator.textContent = "✦ " + addon.creator;
+
+    const type = document.createElement("span");
+    type.textContent = addon.downloads;
+
+    bottom.append(creator, type);
+    content.append(title, description, bottom);
+    card.append(art, content);
+    grid.appendChild(card);
+  });
+
+  empty.style.display = filtered.length ? "none" : "block";
+}
+
+function openModal(mode) {
+  modal.classList.add("open");
+  status.textContent = "";
+
+  const title = document.getElementById("modalTitle");
+  const description = document.getElementById("modalDescription");
+
+  if (mode === "post") {
+    title.textContent = "Prepare an Addon Post";
+    description.textContent =
+      "Describe your addon. Publishing will be enabled when accounts and community storage are connected.";
+  } else if (mode === "everything") {
+    title.textContent = "Create Everything";
+    description.textContent =
+      "Describe your complete addon, including dimensions, creatures, items, structures, and gameplay.";
+    document.getElementById("projectType").value =
+      "Complete Mod — Create Everything";
+  } else {
+    title.textContent = "Create with HuluAI";
+    description.textContent =
+      "Choose a creation type and describe your idea.";
+  }
+}
+
+function closeModal() {
+  modal.classList.remove("open");
+}
+
+document.getElementById("createButton").onclick = () => openModal("create");
+document.getElementById("everythingButton").onclick = () => openModal("everything");
+document.getElementById("postButton").onclick = () => openModal("post");
+document.getElementById("loginButton").onclick = () => {
+  openModal("create");
+  document.getElementById("modalTitle").textContent = "Accounts coming next";
+  document.getElementById("modalDescription").textContent =
+    "Login and sign-up require a secure account system, which we will add in a later step.";
+};
+document.getElementById("closeModal").onclick = closeModal;
+document.getElementById("exploreButton").onclick = () => {
+  document.getElementById("discover").scrollIntoView({ behavior: "smooth" });
+};
+
+search.addEventListener("input", renderAddons);
+
+document.querySelectorAll(".chip").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".chip").forEach(chip =>
+      chip.classList.remove("active")
+    );
+
+    button.classList.add("active");
+    selectedCategory = button.dataset.category;
+    renderAddons();
+  });
+});
+
+document.getElementById("creatorForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const project = {
+    name: document.getElementById("projectName").value.trim(),
+    type: document.getElementById("projectType").value,
+    description: document.getElementById("projectDescription").value.trim()
+  };
+
+  if (!project.name || !project.description) {
+    status.textContent = "Please fill in the project name and description.";
+    return;
+  }
+
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem("huluai_draft_projects") || "[]"
+    );
+
+    saved.push({
+      ...project,
+      createdAt: new Date().toISOString()
+    });
+
+    localStorage.setItem("huluai_draft_projects", JSON.stringify(saved));
+
+    status.textContent =
+      "Draft saved in this browser! AI generation and publishing are not connected yet.";
+  } catch (error) {
+    status.textContent =
+      "Could not save locally. You can keep your description and try again.";
+  }
+});
+
+modal.addEventListener("click", event => {
+  if (event.target === modal) closeModal();
+});
+
+renderAddons();
+    </script>
+
+</body>
+
+</html>

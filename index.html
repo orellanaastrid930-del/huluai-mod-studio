@@ -1,795 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#101218">
-    <title>HuluAI Mod Studio</title>
-
-    <style>
-        :root {
-            --bg: #101218;
-            --panel: #191c25;
-            --panel2: #202430;
-            --text: #f5f6fa;
-            --muted: #969daf;
-            --green: #91f7b2;
-            --border: #2c303d;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: Inter, system-ui, Arial, sans-serif;
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        header {
-            height: 72px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6%;
-            border-bottom: 1px solid var(--border);
-            background: #101218;
-            position: sticky;
-            top: 0;
-            z-index: 5;
-        }
-
-        .logo {
-            font-size: 21px;
-            font-weight: 900;
-            letter-spacing: -1px;
-        }
-
-        .logo span {
-            color: var(--green);
-        }
-
-        nav {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
-
-        nav a {
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        nav a:hover {
-            color: white;
-        }
-
-        .btn {
-            border: 0;
-            padding: 11px 17px;
-            border-radius: 10px;
-            font-weight: 750;
-            background: var(--green);
-            color: #101218;
-        }
-
-        .btn:hover {
-            filter: brightness(.92);
-        }
-
-        .btn.secondary {
-            background: var(--panel2);
-            color: white;
-            border: 1px solid var(--border);
-        }
-
-        .hero {
-            padding: 75px 6% 55px;
-            background:
-                radial-gradient(ellipse at 85% 10%, #31553b50, transparent 45%),
-                radial-gradient(ellipse at 10% 100%, #253d7040, transparent 50%);
-        }
-
-        .badge {
-            display: inline-block;
-            color: var(--green);
-            background: #91f7b212;
-            border: 1px solid #91f7b238;
-            border-radius: 30px;
-            padding: 8px 12px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .hero h1 {
-            max-width: 750px;
-            margin: 22px 0 15px;
-            font-size: clamp(38px, 6vw, 68px);
-            line-height: 1.06;
-            letter-spacing: -3px;
-        }
-
-        .hero h1 span {
-            color: var(--green);
-        }
-
-        .hero p {
-            color: var(--muted);
-            max-width: 580px;
-            line-height: 1.8;
-            font-size: 16px;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 27px;
-        }
-
-        .search-wrap {
-            max-width: 550px;
-            margin-top: 32px;
-        }
-
-        .search-wrap input {
-            width: 100%;
-            background: #191c25;
-            border: 1px solid #363b48;
-            border-radius: 12px;
-            padding: 15px 17px;
-            color: white;
-            outline: none;
-        }
-
-        .search-wrap input:focus {
-            border-color: var(--green);
-        }
-
-        main {
-            padding: 0 6% 70px;
-        }
-
-        .section-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin: 34px 0 20px;
-        }
-
-        .section-head h2 {
-            margin: 0;
-            font-size: 23px;
-            letter-spacing: -.7px;
-        }
-
-        .section-head p {
-            margin: 6px 0 0;
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        .categories {
-            display: flex;
-            gap: 9px;
-            flex-wrap: wrap;
-            margin-bottom: 23px;
-        }
-
-        .chip {
-            background: var(--panel);
-            color: var(--muted);
-            border: 1px solid var(--border);
-            border-radius: 9px;
-            padding: 9px 14px;
-        }
-
-        .chip.active,
-        .chip:hover {
-            background: #91f7b21a;
-            border-color: #91f7b269;
-            color: var(--green);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-        }
-
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform .2s, border-color .2s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: #596271;
-        }
-
-        .art {
-            min-height: 155px;
-            display: grid;
-            place-items: center;
-            font-size: 65px;
-            position: relative;
-            background: linear-gradient(135deg, #203a32, #253b59);
-        }
-
-        .art.purple {
-            background: linear-gradient(135deg, #42275a, #734b6d);
-        }
-
-        .art.orange {
-            background: linear-gradient(135deg, #593a21, #8b563b);
-        }
-
-        .art.blue {
-            background: linear-gradient(135deg, #1d3d5b, #315e7b);
-        }
-
-        .art.red {
-            background: linear-gradient(135deg, #54252d, #8b3d42);
-        }
-
-        .art.teal {
-            background: linear-gradient(135deg, #174a49, #287c71);
-        }
-
-        .tag {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: #101218d9;
-            color: var(--green);
-            border: 1px solid #ffffff20;
-            border-radius: 7px;
-            padding: 5px 8px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .card-content {
-            padding: 16px;
-        }
-
-        .card-content h3 {
-            margin: 0 0 8px;
-            font-size: 17px;
-        }
-
-        .card-content p {
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.6;
-            min-height: 41px;
-            margin: 0 0 17px;
-        }
-
-        .card-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--border);
-            padding-top: 13px;
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .creator {
-            color: #d6d9e2;
-        }
-
-        .empty {
-            display: none;
-            padding: 40px 10px;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .create-banner {
-            margin-top: 65px;
-            padding: 35px;
-            border-radius: 18px;
-            border: 1px solid #91f7b233;
-            background: linear-gradient(120deg, #1b3026, #1b202a 70%);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .create-banner h2 {
-            margin: 0 0 9px;
-        }
-
-        .create-banner p {
-            margin: 0;
-            color: var(--muted);
-            line-height: 1.7;
-        }
-
-        footer {
-            padding: 27px 6%;
-            border-top: 1px solid var(--border);
-            color: var(--muted);
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 10;
-            background: #000b;
-            padding: 20px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.open {
-            display: flex;
-        }
-
-        .modal-box {
-            width: min(500px, 100%);
-            max-height: 90vh;
-            overflow-y: auto;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 25px;
-        }
-
-        .modal-box h2 {
-            margin-top: 0;
-        }
-
-        .modal-box label {
-            display: block;
-            font-size: 13px;
-            color: var(--muted);
-            margin: 15px 0 7px;
-        }
-
-        .modal-box input,
-        .modal-box select,
-        .modal-box textarea {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: white;
-            border-radius: 9px;
-        }
-
-        .modal-box textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .status {
-            font-size: 13px;
-            line-height: 1.6;
-            color: var(--green);
-            margin-top: 14px;
-        }
-
-        @media (max-width: 850px) {
-            .grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            nav {
-                gap: 12px;
-            }
-        }
-
-        @media (max-width: 580px) {
-            header {
-                padding: 0 4%;
-                height: 64px;
-            }
-
-            nav a {
-                display: none;
-            }
-
-            .hero {
-                padding: 55px 5% 40px;
-            }
-
-            .hero h1 {
-                letter-spacing: -1.8px;
-            }
-
-            main {
-                padding: 0 5% 50px;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .art {
-                min-height: 180px;
-            }
-
-            .create-banner {
-                padding: 24px;
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .section-head {
-                align-items: flex-start;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101512" />
+  <meta name="description" content="HuluAI Mod Studio — plan and create Minecraft Bedrock add-on starter packs." />
+  <title>HuluAI Mod Studio</title>
+  <style>
+    :root{--bg:#0b100d;--panel:#121a15;--panel2:#17221b;--border:#28372d;--text:#f0f7f1;--muted:#a4b4a8;--green:#8cf0a5;--green2:#43c96b;--gold:#ffd98a;--red:#ff9a9a;--radius:20px;--shadow:0 16px 50px #0005}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 80% -20%,#23492e 0,transparent 45%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 36px));margin:auto}.topbar{position:sticky;top:0;z-index:10;background:#0b100de8;backdrop-filter:blur(14px);border-bottom:1px solid #24332a}.nav{height:76px;display:flex;align-items:center;gap:18px;justify-content:space-between}.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:-.5px}.brand-mark{width:40px;height:40px;border-radius:13px;background:linear-gradient(145deg,#b5ffbf,#39bd62);color:#102015;display:grid;place-items:center;font-size:23px;box-shadow:0 6px 22px #54e87b25}.brand small{display:block;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1.6px;text-transform:uppercase}.navlinks{display:flex;align-items:center;gap:22px;color:var(--muted);font-size:14px}.navlinks a:hover{color:var(--green)}.nav-actions{display:flex;gap:9px;align-items:center}.btn{border:1px solid transparent;padding:11px 16px;border-radius:12px;background:var(--green);color:#092110;font-weight:850;transition:transform .15s,filter .15s}.btn:hover{filter:brightness(1.06);transform:translateY(-1px)}.btn.secondary{background:#1a261e;color:var(--text);border-color:#334638}.btn.quiet{background:transparent;color:var(--muted);border-color:var(--border)}.btn.small{padding:8px 11px;font-size:13px}.mobile-menu{display:none}.hero{padding:76px 0 40px;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--green);font-size:12px;font-weight:850;letter-spacing:1.6px;text-transform:uppercase;border:1px solid #315e3c;background:#15291a;padding:7px 11px;border-radius:999px}.dot{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:100%;box-shadow:0 0 0 4px #8cf0a51c}.hero h1{font-size:clamp(42px,6.2vw,74px);line-height:.99;letter-spacing:-3.3px;margin:20px 0}.hero h1 span{color:var(--green)}.hero p{color:var(--muted);font-size:17px;max-width:620px}.hero-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:26px}.micro{font-size:12px;color:#819388;margin-top:16px}.preview-card{border:1px solid #33483a;border-radius:28px;background:linear-gradient(145deg,#203728,#111914 65%);padding:18px;box-shadow:var(--shadow);transform:rotate(1deg)}.preview-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.live-pill{border:1px solid #3b7148;color:var(--green);background:#17301e;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:800}.pixel-art{height:220px;margin:18px 0;border-radius:18px;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#397b4d,transparent 44%),linear-gradient(135deg,#17241b,#0b110d);overflow:hidden;border:1px solid #31513a;position:relative}.pixel-art:before,.pixel-art:after{content:"";position:absolute;width:90px;height:90px;border:1px solid #7def9950;transform:rotate(45deg)}.pixel-art:before{top:-40px;left:25px}.pixel-art:after{bottom:-45px;right:30px}.crystal{font-size:92px;filter:drop-shadow(0 0 28px #71ff94a8);z-index:1}.preview-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#0e1711;border:1px solid #26382b;border-radius:13px;padding:11px}.stat strong{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}.section{padding:35px 0 55px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:22px}.section-head h2{margin:0;font-size:clamp(25px,4vw,36px);letter-spacing:-1.1px}.section-head p{margin:6px 0 0;color:var(--muted);font-size:14px}.searchbar{display:flex;gap:10px;margin-bottom:16px}.searchbox{flex:1;position:relative}.searchbox span{position:absolute;left:14px;top:11px;color:var(--muted)}.searchbox input{width:100%;padding:13px 14px 13px 42px}.field,input,select,textarea{width:100%;border-radius:12px;border:1px solid #33453a;background:#0b120d;color:var(--text);padding:12px 13px;outline:none}.field:focus,input:focus,select:focus,textarea:focus{border-color:#69d984;box-shadow:0 0 0 3px #68dc8020}textarea{min-height:115px;resize:vertical}label{display:block;margin:15px 0 7px;font-size:13px;font-weight:800;color:#dbe9de}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.chip{border:1px solid var(--border);background:#111a14;color:var(--muted);padding:8px 13px;border-radius:99px;font-size:13px;font-weight:750}.chip.active,.chip:hover{color:var(--green);border-color:#437950;background:#172a1c}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.addon-card{border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg,#152019,#101612);overflow:hidden;transition:border .2s,transform .2s}.addon-card:hover{border-color:#4b8056;transform:translateY(-3px)}.card-art{height:130px;display:grid;place-items:center;position:relative;background:radial-gradient(circle at 50% 35%,#315a39,#17241b 65%);font-size:54px}.card-art.purple{background:radial-gradient(circle at 50% 35%,#51407c,#1a1827 70%)}.card-art.red{background:radial-gradient(circle at 50% 35%,#783a36,#261615 70%)}.card-art.blue{background:radial-gradient(circle at 50% 35%,#315e85,#131d2a 70%)}.card-art.orange{background:radial-gradient(circle at 50% 35%,#82562a,#241b11 70%)}.card-art.teal{background:radial-gradient(circle at 50% 35%,#2b7168,#11221e 70%)}.tag{position:absolute;bottom:10px;left:11px;border:1px solid #ffffff28;background:#0a100dd9;padding:4px 8px;border-radius:999px;font-size:10px;color:#d8e9dc;font-weight:800}.card-body{padding:15px}.card-body h3{margin:0 0 6px;font-size:17px}.card-body p{margin:0 0 13px;color:var(--muted);font-size:13px;min-height:39px}.card-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #26342a;padding-top:12px;font-size:11px;color:#91a295}.empty{display:none;border:1px dashed #34463a;padding:28px;border-radius:16px;color:var(--muted);text-align:center}.create-banner{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;border:1px solid #396748;background:linear-gradient(110deg,#1b3823,#121a14);border-radius:22px;padding:25px;margin-top:30px}.badge{display:inline-block;color:var(--green);font-size:10px;letter-spacing:1.5px;font-weight:900}.create-banner h2{margin:7px 0;font-size:25px;letter-spacing:-.8px}.create-banner p{margin:0;color:var(--muted);font-size:14px;max-width:660px}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{border:1px solid var(--border);background:var(--panel);border-radius:17px;padding:18px}.feature-icon{width:39px;height:39px;border-radius:12px;background:#203b27;display:grid;place-items:center;font-size:20px}.feature h3{margin:12px 0 5px;font-size:16px}.feature p{margin:0;color:var(--muted);font-size:13px}.community-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.community-item{padding:16px;border:1px solid var(--border);border-radius:15px;background:var(--panel)}.community-item h3{margin:0 0 6px;font-size:15px}.community-item p{margin:0 0 9px;color:var(--muted);font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}.community-item small{color:#8fa092;font-size:11px}.notice{padding:12px 14px;border:1px solid #65532d;background:#2c2516;color:#ecd8a4;border-radius:12px;font-size:12px;margin:14px 0}.footer{border-top:1px solid #26342a;padding:25px 0 35px;color:#809185;font-size:12px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}.modal-backdrop{position:fixed;inset:0;z-index:30;background:#000a;display:none;align-items:center;justify-content:center;padding:16px}.modal-backdrop.open{display:flex}.modal{width:min(720px,100%);max-height:min(92vh,900px);overflow:auto;border:1px solid #39513f;border-radius:22px;background:#111913;box-shadow:0 25px 100px #000b}.modal-head{position:sticky;top:0;background:#111913ed;backdrop-filter:blur(12px);display:flex;align-items:start;justify-content:space-between;gap:15px;padding:21px 22px;border-bottom:1px solid var(--border);z-index:1}.modal-head h2{margin:0;font-size:23px;letter-spacing:-.6px}.modal-head p{margin:5px 0 0;color:var(--muted);font-size:13px}.icon-btn{width:35px;height:35px;border-radius:10px;border:1px solid var(--border);background:#19251d;color:var(--text);font-size:19px}.modal-content{padding:20px 22px 24px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field-help{color:#839689;font-size:11px;margin-top:5px}.options-title{font-weight:850;font-size:13px;margin:19px 0 9px}.checks{display:grid;grid-template-columns:1fr 1fr;gap:9px}.check{display:flex;gap:9px;align-items:flex-start;padding:11px;background:#0c130e;border:1px solid #2d3e32;border-radius:12px;color:#d8e6db;font-size:12px}.check input{width:16px;height:16px;accent-color:#6ee989;margin:2px 0 0;flex:none}.check span small{display:block;color:#85988a;margin-top:2px;font-size:10px}.modal-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}.status{display:none;margin-top:13px;border-radius:12px;padding:12px 13px;background:#17301e;border:1px solid #386d45;color:#c7f7d0;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}.status.show{display:block}.projects-list{display:grid;gap:10px}.project-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--border);border-radius:13px;background:#0b120d}.project-row h3{font-size:14px;margin:0 0 3px}.project-row p{margin:0;color:var(--muted);font-size:11px}.project-buttons{display:flex;gap:7px;flex-wrap:wrap}.empty-state{padding:24px;text-align:center;border:1px dashed #334439;border-radius:14px;color:var(--muted);font-size:13px}.mini-label{font-size:10px;text-transform:uppercase;letter-spacing:1.1px;font-weight:900;color:var(--muted)}
+    @media(max-width:850px){.navlinks{display:none}.mobile-menu{display:block}.hero{grid-template-columns:1fr;padding-top:48px}.preview-card{max-width:540px;width:100%;margin:auto}.cards{grid-template-columns:repeat(2,1fr)}.feature-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.wrap{width:min(100% - 24px,1160px)}.nav{height:66px}.brand{font-size:14px}.brand-mark{width:35px;height:35px}.nav-actions .btn{padding:9px 10px;font-size:12px}.hero{padding-top:38px}.hero h1{letter-spacing:-2.2px}.hero p{font-size:15px}.preview-bottom{gap:6px}.stat{padding:8px}.stat strong{font-size:17px}.cards,.feature-grid,.community-list{grid-template-columns:1fr}.create-banner{grid-template-columns:1fr;padding:19px}.create-banner .btn{width:100%}.section-head{align-items:start;flex-direction:column}.searchbar{flex-direction:column}.two-col,.checks{grid-template-columns:1fr}.modal-head,.modal-content{padding-left:16px;padding-right:16px}.project-row{align-items:flex-start;flex-direction:column}.hero-actions .btn{flex:1}.pixel-art{height:175px}}
+  </style>
 </head>
-
 <body>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#home" aria-label="HuluAI Mod Studio home"><span class="brand-mark">H</span><span>HuluAI Mod Studio<small>Bedrock Creator Lab</small></span></a>
+      <nav class="navlinks" aria-label="Main navigation"><a href="#discover">Explore</a><a href="#create">Create</a><a href="#community">Community</a></nav>
+      <div class="nav-actions"><button class="btn secondary small" id="projectsButton">My Projects <span id="projectCount">0</span></button><button class="btn small" id="loginButton">Account</button></div>
+    </div>
+  </header>
 
-    <header>
-        <div class="logo">HuluAI <span>MOD STUDIO</span></div>
-
-        <nav>
-            <a href="#discover">Discover</a>
-            <a href="#creator">AI Creator</a>
-            <button class="btn secondary" id="loginButton">Login / Sign up</button>
-        </nav>
-    </header>
-
+  <main id="home" class="wrap">
     <section class="hero">
-        <span class="badge">✦ YOUR WORLD. YOUR CREATION.</span>
-
-        <h1>Minecraft has no limits.<br><span>Neither do you.</span></h1>
-
-        <p>
-            Discover community addons, explore new worlds, and create your own
-            Minecraft Bedrock experiences with HuluAI.
-        </p>
-
-        <div class="hero-actions">
-            <button class="btn" id="createButton">✦ Create Your Mod</button>
-            <button class="btn secondary" id="exploreButton">Explore Addons ↓</button>
-        </div>
-
-        <div class="search-wrap">
-            <input id="search" type="search"
-      placeholder="Search addons, dimensions, mobs, creators...">
-        </div>
+      <div>
+        <span class="eyebrow"><span class="dot"></span> Your add-on ideas start here</span>
+        <h1>Don't just play Minecraft.<br><span>Reinvent it.</span></h1>
+        <p>Plan custom dimensions, creatures, items, biomes, and new gameplay. Build a starter Bedrock add-on pack right in your browser—no coding setup required.</p>
+        <div class="hero-actions"><button class="btn" id="heroCreate">✦ Create Everything</button><button class="btn secondary" id="heroExplore">Explore ideas ↓</button></div>
+        <div class="micro">Free to use · Browser-based drafts · Starter add-on export</div>
+      </div>
+      <div class="preview-card" aria-label="Add-on preview illustration">
+        <div class="preview-top"><span>HULUAI / CREATOR SPACE</span><span class="live-pill">● READY</span></div>
+        <div class="pixel-art"><div class="crystal">💎</div></div>
+        <div class="preview-bottom"><div class="stat"><strong>01</strong><span>Idea workspace</span></div><div class="stat"><strong>BP + RP</strong><span>Starter pack</span></div><div class="stat"><strong>FREE</strong><span>Local tools</span></div></div>
+      </div>
     </section>
 
-    <main id="discover">
-        <div class="section-head">
-            <div>
-                <h2>Discover Addons</h2>
-                <p>Find your next Minecraft adventure.</p>
-            </div>
+    <section class="section" id="discover">
+      <div class="section-head"><div><div class="mini-label">Inspiration library</div><h2>Explore add-on ideas</h2><p>These are sample concepts to spark your next project.</p></div><button class="btn secondary" id="communityJump">Community posts ↓</button></div>
+      <div class="searchbar"><div class="searchbox"><span>⌕</span><input id="search" type="search" placeholder="Search dimensions, creatures, survival…" aria-label="Search addon ideas"></div><button class="btn secondary" id="clearSearch">Clear</button></div>
+      <div class="chips" id="categoryChips"><button class="chip active" data-category="All">All ideas</button><button class="chip" data-category="Dimensions">Dimensions</button><button class="chip" data-category="Mobs & Bosses">Mobs & Bosses</button><button class="chip" data-category="Items & Gear">Items & Gear</button><button class="chip" data-category="Survival">Survival</button><button class="chip" data-category="Textures">Textures</button></div>
+      <div class="cards" id="addonGrid"></div><div class="empty" id="empty">No matching ideas. Try another search.</div>
+      <section class="create-banner" id="create"><div><span class="badge">HULUAI CREATOR</span><h2>Create the whole world, not just one item.</h2><p>Describe your project, choose which starter features to include, and download a Minecraft Bedrock starter pack. Advanced dimensions, biomes, and structures are saved as a blueprint for the next development phase.</p></div><button class="btn" id="everythingButton">Create Everything ↗</button></section>
+    </section>
 
-            <button class="btn secondary" id="postButton">＋ Create Post</button>
-        </div>
+    <section class="section" aria-labelledby="featuresTitle"><div class="section-head"><div><div class="mini-label">What you can plan</div><h2 id="featuresTitle">One workspace. Big ideas.</h2><p>Build a concept first, then grow it into a complete add-on.</p></div></div><div class="feature-grid"><article class="feature"><div class="feature-icon">🌌</div><h3>Dimensions & biomes</h3><p>Save world ideas, atmosphere, terrain, and exploration goals in your project blueprint.</p></article><article class="feature"><div class="feature-icon">👾</div><h3>Creatures</h3><p>Generate a basic custom creature definition and resource-pack model in the starter download.</p></article><article class="feature"><div class="feature-icon">💎</div><h3>Custom items</h3><p>Create a namespaced item with an icon texture and item definition.</p></article><article class="feature"><div class="feature-icon">🧱</div><h3>Structures & recipes</h3><p>Record structure ideas and include a sample crafting recipe for the generated item.</p></article><article class="feature"><div class="feature-icon">🎨</div><h3>Textures</h3><p>Generate simple starter PNG textures in your browser, ready for you to improve.</p></article><article class="feature"><div class="feature-icon">📦</div><h3>Export & save</h3><p>Download a .mcaddon starter and keep local project blueprints in this browser.</p></article></div></section>
 
-        <div class="categories" id="categories">
-            <button class="chip active" data-category="All">All</button>
-            <button class="chip" data-category="Dimensions">Dimensions</button>
-            <button class="chip" data-category="Mobs">Mobs & Bosses</button>
-            <button class="chip" data-category="Items">Items & Weapons</button>
-            <button class="chip" data-category="Survival">Survival</button>
-            <button class="chip" data-category="Textures">Textures</button>
-        </div>
+    <section class="section" id="community"><div class="section-head"><div><div class="mini-label">Creator corner</div><h2>Community ideas</h2><p>Draft posts are stored in this browser only until a shared backend is connected.</p></div><button class="btn secondary" id="postButton">＋ Draft a post</button></div><div class="notice">Local preview mode: posts and projects are not published to other visitors. Real accounts, public community storage, and HuluAI Brain generation will be connected in a later phase.</div><div class="community-list" id="communityList"></div></section>
+  </main>
 
-        <div class="grid" id="addonGrid"></div>
-        <div class="empty" id="empty">No matching addons. Try another search.</div>
+  <footer class="wrap footer"><span>© 2026 HuluAI Mod Studio</span><span>Built for Minecraft Bedrock creators · Starter exports require in-game testing</span></footer>
 
-        <section class="create-banner" id="creator">
-            <div>
-                <span class="badge">HULUAI AI CREATOR</span>
-                <h2 style="margin-top:16px">Don't just play Minecraft. Reinvent it.</h2>
-                <p>
-                    Create mobs, weapons, dimensions, biomes, structures, and eventually
-                    entire addons from one description.
-                </p>
-            </div>
-            <button class="btn" id="everythingButton">Create Everything ↗</button>
-        </section>
-    </main>
+  <div class="modal-backdrop" id="creatorModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><div class="modal-head"><div><h2 id="modalTitle">Create with HuluAI</h2><p id="modalDescription">Describe your project and choose your starter features.</p></div><button class="icon-btn" id="closeModal" aria-label="Close">×</button></div><div class="modal-content">
+    <form id="creatorForm">
+      <div class="two-col"><div><label for="projectName">Project name</label><input id="projectName" maxlength="70" placeholder="Example: The Shadow Realm" required><div class="field-help">Used to name your exported project.</div></div><div><label for="projectType">Creation type</label><select id="projectType"><option>Complete Add-on — Create Everything</option><option>Dimension Concept</option><option>Mobs & Creatures</option><option>Items & Gear</option><option>Biomes & Structures</option><option>Textures & Resources</option><option>Survival Add-on</option></select></div></div>
+      <label for="projectDescription">Describe your idea</label><textarea id="projectDescription" maxlength="4000" placeholder="Describe the world, creatures, abilities, looks, crafting, and gameplay you want…" required></textarea>
+      <div class="options-title">Choose features for this project</div>
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="featureItem" checked><span><strong>Custom item + icon</strong><small>Included in the downloadable starter pack.</small></span></label>
+        <label class="check"><input type="checkbox" id="featureMob" checked><span><strong>Custom creature</strong><small>Basic entity behavior, simple cube model, and texture.</small></span></label>
+        <label class="check"><input type="checkbox" id="featureRecipe" checked><span><strong>Crafting recipe</strong><small>Recipe for the generated custom item.</small></span></label>
+        <label class="check"><input type="checkbox" id="featureDimension"><span><strong>Dimension concept</strong><small>Added to blueprint; not a fully implemented dimension.</small></span></label>
+        <label class="check"><input type="checkbox" id="featureBiomes"><span><strong>Biomes & structures</strong><small>Added to blueprint for future implementation.</small></span></label>
+        <label class="check"><input type="checkbox" id="featureTextures" checked><span><strong>Generated starter textures</strong><small>PNG textures generated in your browser.</small></span></label>
+      </div>
+      <div class="notice">This version generates a functional starter pack template, not an AI-generated complete mod. Generated add-ons still need testing in your Minecraft Bedrock version.</div>
+      <div class="modal-actions"><button class="btn" type="submit" id="generateButton">Generate & Download .mcaddon</button><button class="btn secondary" type="button" id="saveBlueprintButton">Save Blueprint</button><button class="btn quiet" type="button" id="cancelButton">Cancel</button></div>
+    </form><div class="status" id="status" role="status" aria-live="polite"></div>
+  </div></div></div>
 
-    <footer>
-        <span>© 2026 HuluAI Mod Studio</span>
-        <span>Built for Minecraft Bedrock creators · Free creation vision</span>
-    </footer>
+  <div class="modal-backdrop" id="projectsModal" role="dialog" aria-modal="true" aria-labelledby="projectsTitle"><div class="modal"><div class="modal-head"><div><h2 id="projectsTitle">My Projects</h2><p>Your saved drafts on this browser.</p></div><button class="icon-btn" id="closeProjects" aria-label="Close projects">×</button></div><div class="modal-content"><div id="projectsList" class="projects-list"></div><div class="modal-actions"><button class="btn secondary" id="exportAllButton">Export all blueprints</button><button class="btn quiet" id="closeProjectsBottom">Close</button></div><div class="field-help" style="margin-top:12px">Local browser storage is not cloud storage. Clearing your browser data may remove these drafts.</div></div></div></div>
 
-    <div class="modal" id="modal">
-        <div class="modal-box">
-            <h2 id="modalTitle">Create with HuluAI</h2>
-            <p style="color:var(--muted);font-size:13px;line-height:1.6" id="modalDescription">
-                Describe what you want to create.
-            </p>
+  <script>
+    "use strict";
+    const STORAGE_PROJECTS = "huluai_modstudio_projects_v1";
+    const STORAGE_POSTS = "huluai_modstudio_posts_v1";
+    const ideas = [
+      {name:"The Forgotten Dimension",category:"Dimensions",icon:"🌌",style:"purple",description:"Explore a mysterious realm with unusual landscapes, secrets, and discoveries.",creator:"HuluAI idea library"},
+      {name:"Abyssal Guardians",category:"Mobs & Bosses",icon:"👾",style:"red",description:"A set of strange creatures to make exploration more surprising.",creator:"HuluAI idea library"},
+      {name:"Crystal Arsenal",category:"Items & Gear",icon:"💎",style:"blue",description:"A family of crystal items with a distinct look and crafting path.",creator:"HuluAI idea library"},
+      {name:"Wild Survival",category:"Survival",icon:"🌲",style:"teal",description:"A survival concept with extra goals and a tougher environment.",creator:"HuluAI idea library"},
+      {name:"Mystic Realms",category:"Dimensions",icon:"🔮",style:"purple",description:"Discover magical places, new visual themes, and exploration milestones.",creator:"HuluAI idea library"},
+      {name:"Ancient Relics",category:"Textures",icon:"🪨",style:"orange",description:"A fantasy-inspired visual theme for your worlds and custom items.",creator:"HuluAI idea library"}
+    ];
+    const $ = id => document.getElementById(id);
+    let selectedCategory = "All";
+    let currentMode = "create";
+    const creatorModal = $("creatorModal"), projectsModal = $("projectsModal"), statusBox = $("status");
 
-            <form id="creatorForm">
-                <label for="projectName">Project name</label>
-                <input id="projectName" placeholder="Example: The Shadow Dimension" required>
+    function readStorage(key, fallback=[]) {
+      try { const val = JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); return Array.isArray(val) ? val : fallback; }
+      catch { return fallback; }
+    }
+    function writeStorage(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+    function safeText(value, max=120) { return String(value || "").trim().slice(0,max); }
+    function slugify(value) {
+      const slug = String(value || "huluai_project").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9_]+/g,"_").replace(/^_+|_+$/g,"").slice(0,38);
+      return slug || "huluai_project";
+    }
+    function escapeHtml(text) { return String(text).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+    }
+    function downloadJSON(data, filename) { downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"}),filename); }
+    function featureState() { return {item:$("featureItem").checked,mob:$("featureMob").checked,recipe:$("featureRecipe").checked,dimension:$("featureDimension").checked,biomes:$("featureBiomes").checked,textures:$("featureTextures").checked}; }
+    function buildProjectFromForm() {
+      const name = safeText($("projectName").value,70), description = safeText($("projectDescription").value,4000), type = $("projectType").value;
+      if (!name || !description) throw new Error("Please enter a project name and describe your idea.");
+      return {id:makeUUID(),name,type,description,features:featureState(),edition:"Minecraft Bedrock",createdAt:new Date().toISOString(),generationStatus:"Blueprint saved; generated files depend on selected features."};
+    }
+    function makeUUID() {
+      if (crypto && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16);});
+    }
+    function renderIdeas() {
+      const term=$("search").value.trim().toLowerCase();
+      const filtered=ideas.filter(a=>(selectedCategory==="All"||a.category===selectedCategory)&&[a.name,a.category,a.description,a.creator].join(" ").toLowerCase().includes(term));
+      const grid=$("addonGrid"); grid.replaceChildren();
+      filtered.forEach(a=>{
+        const card=document.createElement("article");card.className="addon-card";
+        const art=document.createElement("div");art.className="card-art "+a.style;art.textContent=a.icon;
+        const tag=document.createElement("span");tag.className="tag";tag.textContent=a.category;art.appendChild(tag);
+        const body=document.createElement("div");body.className="card-body";
+        const h=document.createElement("h3");h.textContent=a.name;
+        const p=document.createElement("p");p.textContent=a.description;
+        const footer=document.createElement("div");footer.className="card-footer";
+        const who=document.createElement("span");who.textContent=a.creator;
+        const btn=document.createElement("button");btn.className="btn secondary small";btn.textContent="Use idea";btn.addEventListener("click",()=>{openCreator("create");$("projectName").value=a.name;$("projectDescription").value=a.description;$("projectType").value=a.category==="Dimensions"?"Dimension Concept":a.category==="Mobs & Bosses"?"Mobs & Creatures":a.category==="Items & Gear"?"Items & Gear":a.category==="Textures"?"Textures & Resources":"Survival Add-on";});
+        footer.append(who,btn);body.append(h,p,footer);card.append(art,body);grid.appendChild(card);
+      });
+      $("empty").style.display=filtered.length?"none":"block";
+    }
+    function renderCommunity() {
+      const posts=readStorage(STORAGE_POSTS);const list=$("communityList");list.replaceChildren();
+      if(!posts.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No local drafts yet. Choose ‘Draft a post’ to make the first one.";list.appendChild(empty);return;}
+      posts.slice().reverse().forEach(post=>{const item=document.createElement("article");item.className="community-item";const h=document.createElement("h3");h.textContent=post.title;const p=document.createElement("p");p.textContent=post.description;const sm=document.createElement("small");sm.textContent="Local draft · "+new Date(post.createdAt).toLocaleString();item.append(h,p,sm);list.appendChild(item);});
+    }
+    function updateProjectCount(){ $("projectCount").textContent=String(readStorage(STORAGE_PROJECTS).length); }
+    function showStatus(message,isError=false){statusBox.textContent=message;statusBox.style.background=isError?"#321919":"#17301e";statusBox.style.borderColor=isError?"#844444":"#386d45";statusBox.style.color=isError?"#ffd0d0":"#c7f7d0";statusBox.classList.add("show");}
+    function openCreator(mode="create") {
+      currentMode=mode;statusBox.classList.remove("show");creatorModal.classList.add("open");document.body.style.overflow="hidden";
+      const title=$("modalTitle"),desc=$("modalDescription"),submit=$("generateButton");
+      if(mode==="post") {title.textContent="Draft a Community Post";desc.textContent="Create a local post draft for your add-on idea.";submit.textContent="Save Post Draft";$("projectType").value="Complete Add-on — Create Everything";}
+      else if(mode==="everything"){title.textContent="Create Everything";desc.textContent="Design the full idea, then export a starter Bedrock pack and save the remaining work as a blueprint.";submit.textContent="Generate & Download .mcaddon";$("projectType").value="Complete Add-on — Create Everything";$("featureItem").checked=true;$("featureMob").checked=true;$("featureRecipe").checked=true;$("featureTextures").checked=true;}
+      else {title.textContent="Create with HuluAI";desc.textContent="Describe your project and choose the starter features.";submit.textContent="Generate & Download .mcaddon";}
+    }
+    function closeCreator(){creatorModal.classList.remove("open");document.body.style.overflow="";}
+    function saveProject(project){const all=readStorage(STORAGE_PROJECTS);all.push(project);writeStorage(STORAGE_PROJECTS,all);updateProjectCount();}
+    function saveBlueprintFromForm(){try{const project=buildProjectFromForm();saveProject(project);showStatus("Blueprint saved in this browser. Use My Projects to view, export, or regenerate the starter pack.");return project;}catch(error){showStatus(error.message||"Could not save the blueprint.",true);return null;}}
+    function openProjects(){renderProjects();projectsModal.classList.add("open");document.body.style.overflow="hidden";}
+    function closeProjects(){projectsModal.classList.remove("open");document.body.style.overflow="";}
+    function renderProjects(){const all=readStorage(STORAGE_PROJECTS);const list=$("projectsList");list.replaceChildren();if(!all.length){const el=document.createElement("div");el.className="empty-state";el.textContent="No projects saved yet. Use Create Everything to start one.";list.appendChild(el);return;}all.slice().reverse().forEach(project=>{const row=document.createElement("div");row.className="project-row";const info=document.createElement("div");const h=document.createElement("h3");h.textContent=project.name;const p=document.createElement("p");p.textContent=project.type+" · "+new Date(project.createdAt).toLocaleDateString();info.append(h,p);const buttons=document.createElement("div");buttons.className="project-buttons";const json=document.createElement("button");json.className="btn secondary small";json.textContent="Export JSON";json.addEventListener("click",()=>downloadJSON(project,slugify(project.name)+"-blueprint.json"));const pack=document.createElement("button");pack.className="btn small";pack.textContent="Build .mcaddon";pack.addEventListener("click",async()=>{pack.disabled=true;pack.textContent="Building…";try{await generateAddon(project);}catch(e){alert("Could not build the starter pack: "+(e.message||e));}finally{pack.disabled=false;pack.textContent="Build .mcaddon";}});const del=document.createElement("button");del.className="btn quiet small";del.textContent="Delete";del.addEventListener("click",()=>{if(!confirm("Delete this local project draft?"))return;const next=readStorage(STORAGE_PROJECTS).filter(p=>p.id!==project.id);writeStorage(STORAGE_PROJECTS,next);updateProjectCount();renderProjects();});buttons.append(json,pack,del);row.append(info,buttons);list.appendChild(row);});}
 
-                <label for="projectType">What do you want to create?</label>
-                <select id="projectType">
-        <option>Complete Mod — Create Everything</option>
-        <option>New Dimension</option>
-        <option>Mobs and Bosses</option>
-        <option>Weapons and Items</option>
-        <option>Biomes and Structures</option>
-        <option>Textures and Resources</option>
-        <option>Survival Addon</option>
-      </select>
-
-                <label for="projectDescription">Describe your idea</label>
-                <textarea id="projectDescription"
-        placeholder="Describe the world, features, creatures, abilities, and gameplay..."
-        required></textarea>
-
-                <div class="modal-actions">
-                    <button type="submit" class="btn">Prepare Project</button>
-                    <button type="button" class="btn secondary" id="closeModal">Cancel</button>
-                </div>
-            </form>
-
-            <div class="status" id="status"></div>
-        </div>
-    </div>
-
-    <script>
-        const addons = [
-  {
-    name: "The Forgotten Dimension",
-    category: "Dimensions",
-    icon: "🌌",
-    style: "purple",
-    description: "Explore a mysterious realm filled with strange landscapes.",
-    creator: "Community Creator",
-    downloads: "Dimension"
-  },
-  {
-    name: "Abyssal Bosses",
-    category: "Mobs",
-    icon: "🐉",
-    style: "red",
-    description: "Face powerful creatures and challenging boss battles.",
-    creator: "Community Creator",
-    downloads: "Mobs & Bosses"
-  },
-  {
-    name: "Crystal Arsenal",
-    category: "Items",
-    icon: "⚔️",
-    style: "blue",
-    description: "Imagine a new collection of crystal-powered equipment.",
-    creator: "Community Creator",
-    downloads: "Items & Weapons"
-  },
-  {
-    name: "Wild Survival",
-    category: "Survival",
-    icon: "🌲",
-    style: "teal",
-    description: "A survival-themed concept for your next adventure.",
-    creator: "Community Creator",
-    downloads: "Survival"
-  },
-  {
-    name: "Mystic Realms",
-    category: "Dimensions",
-    icon: "🔮",
-    style: "purple",
-    description: "Discover magical worlds and mysterious environments.",
-    creator: "Community Creator",
-    downloads: "Dimension"
-  },
-  {
-    name: "Ancient Relics",
-    category: "Textures",
-    icon: "💎",
-    style: "orange",
-    description: "A fantasy-inspired visual theme for your world.",
-    creator: "Community Creator",
-    downloads: "Textures"
-  }
-];
-
-let selectedCategory = "All";
-
-const grid = document.getElementById("addonGrid");
-const search = document.getElementById("search");
-const empty = document.getElementById("empty");
-const modal = document.getElementById("modal");
-const status = document.getElementById("status");
-
-function renderAddons() {
-  const term = search.value.toLowerCase();
-
-  const filtered = addons.filter(addon => {
-    const matchesCategory =
-      selectedCategory === "All" || addon.category === selectedCategory;
-
-    const text = (
-      addon.name + " " +
-      addon.category + " " +
-      addon.description + " " +
-      addon.creator
-    ).toLowerCase();
-
-    return matchesCategory && text.includes(term);
-  });
-
-  grid.innerHTML = "";
-
-  filtered.forEach(addon => {
-    const card = document.createElement("article");
-    card.className = "card";
-
-    const art = document.createElement("div");
-    art.className = "art " + addon.style;
-    art.textContent = addon.icon;
-
-    const tag = document.createElement("span");
-    tag.className = "tag";
-    tag.textContent = addon.category;
-    art.appendChild(tag);
-
-    const content = document.createElement("div");
-    content.className = "card-content";
-
-    const title = document.createElement("h3");
-    title.textContent = addon.name;
-
-    const description = document.createElement("p");
-    description.textContent = addon.description;
-
-    const bottom = document.createElement("div");
-    bottom.className = "card-bottom";
-
-    const creator = document.createElement("span");
-    creator.className = "creator";
-    creator.textContent = "✦ " + addon.creator;
-
-    const type = document.createElement("span");
-    type.textContent = addon.downloads;
-
-    bottom.append(creator, type);
-    content.append(title, description, bottom);
-    card.append(art, content);
-    grid.appendChild(card);
-  });
-
-  empty.style.display = filtered.length ? "none" : "block";
-}
-
-function openModal(mode) {
-  modal.classList.add("open");
-  status.textContent = "";
-
-  const title = document.getElementById("modalTitle");
-  const description = document.getElementById("modalDescription");
-
-  if (mode === "post") {
-    title.textContent = "Prepare an Addon Post";
-    description.textContent =
-      "Describe your addon. Publishing will be enabled when accounts and community storage are connected.";
-  } else if (mode === "everything") {
-    title.textContent = "Create Everything";
-    description.textContent =
-      "Describe your complete addon, including dimensions, creatures, items, structures, and gameplay.";
-    document.getElementById("projectType").value =
-      "Complete Mod — Create Everything";
-  } else {
-    title.textContent = "Create with HuluAI";
-    description.textContent =
-      "Choose a creation type and describe your idea.";
-  }
-}
-
-function closeModal() {
-  modal.classList.remove("open");
-}
-
-document.getElementById("createButton").onclick = () => openModal("create");
-document.getElementById("everythingButton").onclick = () => openModal("everything");
-document.getElementById("postButton").onclick = () => openModal("post");
-document.getElementById("loginButton").onclick = () => {
-  openModal("create");
-  document.getElementById("modalTitle").textContent = "Accounts coming next";
-  document.getElementById("modalDescription").textContent =
-    "Login and sign-up require a secure account system, which we will add in a later step.";
-};
-document.getElementById("closeModal").onclick = closeModal;
-document.getElementById("exploreButton").onclick = () => {
-  document.getElementById("discover").scrollIntoView({ behavior: "smooth" });
-};
-
-search.addEventListener("input", renderAddons);
-
-document.querySelectorAll(".chip").forEach(button => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".chip").forEach(chip =>
-      chip.classList.remove("active")
-    );
-
-    button.classList.add("active");
-    selectedCategory = button.dataset.category;
-    renderAddons();
-  });
-});
-
-document.getElementById("creatorForm").addEventListener("submit", event => {
-  event.preventDefault();
-
-  const project = {
-    name: document.getElementById("projectName").value.trim(),
-    type: document.getElementById("projectType").value,
-    description: document.getElementById("projectDescription").value.trim()
-  };
-
-  if (!project.name || !project.description) {
-    status.textContent = "Please fill in the project name and description.";
-    return;
-  }
-
-  try {
-    const saved = JSON.parse(
-      localStorage.getItem("huluai_draft_projects") || "[]"
-    );
-
-    saved.push({
-      ...project,
-      createdAt: new Date().toISOString()
-    });
-
-    localStorage.setItem("huluai_draft_projects", JSON.stringify(saved));
-
-    status.textContent =
-      "Draft saved in this browser! AI generation and publishing are not connected yet.";
-  } catch (error) {
-    status.textContent =
-      "Could not save locally. You can keep your description and try again.";
-  }
-});
-
-modal.addEventListener("click", event => {
-  if (event.target === modal) closeModal();
-});
-
-renderAddons();
-    </script>
-
+    // Minimal uncompressed ZIP writer. This lets the page package packs without a third-party library.
+    const CRC_TABLE=(()=>{const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1);table[n]=c>>>0;}return table;})();
+    function crc32(bytes){let c=0xffffffff;for(let i=0;i<bytes.length;i++)c=CRC_TABLE[(c^bytes[i])&0xff]^(c>>>8);return(c^0xffffffff)>>>0;}
+    const encoder=new TextEncoder();
+    function bytesOf(value){return value instanceof Uint8Array?value:encoder.encode(String(value));}
+    function zipStore(files){
+      const localParts=[],centralParts=[];let offset=0;
+      for(const file of files){const name=encoder.encode(file.name),data=bytesOf(file.data),crc=crc32(data);const local=new Uint8Array(30+name.length+data.length);const lv=new DataView(local.buffer);lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0x0800,true);lv.setUint16(8,0,true);lv.setUint16(10,0,true);lv.setUint16(12,33,true);lv.setUint32(14,crc,true);lv.setUint32(18,data.length,true);lv.setUint32(22,data.length,true);lv.setUint16(26,name.length,true);lv.setUint16(28,0,true);local.set(name,30);local.set(data,30+name.length);localParts.push(local);
+        const central=new Uint8Array(46+name.length);const cv=new DataView(central.buffer);cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(10,0,true);cv.setUint16(12,0,true);cv.setUint16(14,33,true);cv.setUint32(16,crc,true);cv.setUint32(20,data.length,true);cv.setUint32(24,data.length,true);cv.setUint16(28,name.length,true);cv.setUint16(30,0,true);cv.setUint16(32,0,true);cv.setUint16(34,0,true);cv.setUint16(36,0,true);cv.setUint32(38,0,true);cv.setUint32(42,offset,true);central.set(name,46);centralParts.push(central);offset+=local.length;
+      }
+      const centralSize=centralParts.reduce((s,p)=>s+p.length,0),end=new Uint8Array(22),ev=new DataView(end.buffer);ev.setUint32(0,0x06054b50,true);ev.setUint16(4,0,true);ev.setUint16(6,0,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,centralSize,true);ev.setUint32(16,offset,true);ev.setUint16(20,0,true);
+      const total=offset+centralSize+end.length,out=new Uint8Array(total);let pos=0;for(const part of localParts){out.set(part,pos);pos+=part.length;}for(const part of centralParts){out.set(part,pos);pos+=part.length;}out.set(end,pos);return out;
+    }
+    function pngTexture(size,kind="item"){
+      const canvas=document.createElement("canvas");canvas.width=size;canvas.height=size;const c=canvas.getContext("2d");c.clearRect(0,0,size,size);const unit=size/16;
+      if(kind==="item"){
+        c.fillStyle="#174c2c";c.beginPath();c.moveTo(8*unit,1*unit);c.lineTo(14*unit,6*unit);c.lineTo(11*unit,14*unit);c.lineTo(5*unit,14*unit);c.lineTo(2*unit,6*unit);c.closePath();c.fill();
+        c.fillStyle="#50d978";c.beginPath();c.moveTo(8*unit,2*unit);c.lineTo(12*unit,6*unit);c.lineTo(10*unit,12*unit);c.lineTo(6*unit,12*unit);c.lineTo(4*unit,6*unit);c.closePath();c.fill();
+        c.fillStyle="#b8ffc9";c.beginPath();c.moveTo(8*unit,3*unit);c.lineTo(10*unit,6*unit);c.lineTo(7*unit,8*unit);c.lineTo(5*unit,6*unit);c.closePath();c.fill();c.fillStyle="#247e43";c.fillRect(8*unit,8*unit,2*unit,3*unit);
+      }else{
+        c.fillStyle="#245b38";c.fillRect(1*unit,1*unit,14*unit,14*unit);c.fillStyle="#4bc96a";c.fillRect(3*unit,3*unit,10*unit,10*unit);c.fillStyle="#b8ffc9";c.fillRect(4*unit,4*unit,3*unit,3*unit);c.fillStyle="#102416";c.fillRect(4*unit,8*unit,2*unit,2*unit);c.fillRect(10*unit,8*unit,2*unit,2*unit);c.fillStyle="#173921";c.fillRect(6*unit,11*unit,4*unit,1*unit);
+      }
+      const data=canvas.toDataURL("image/png").split(",")[1];const binary=atob(data);const out=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)out[i]=binary.charCodeAt(i);return out;
+    }
+    function jsonFile(name,obj){return {name,data:JSON.stringify(obj,null,2)};}
+    function manifest(name,description,headerUUID,moduleUUID,type,dependencies=[]){return {format_version:2,header:{name,description,uuid:headerUUID,version:[1,0,0],min_engine_version:[1,20,20]},modules:[{type,uuid:moduleUUID,version:[1,0,0]}],...(dependencies.length?{dependencies}: {})};}
+    async function generateAddon(project){
+      const name=safeText(project.name,70)||"HuluAI Add-on";const slug=slugify(name);const features=project.features||{item:true,mob:true,recipe:true,dimension:false,biomes:false,textures:true};const namespace="huluai";const itemId=namespace+":"+slug+"_artifact";const mobId=namespace+":"+slug+"_guardian";const itemKey=namespace+"_"+slug+"_artifact";const mobKey=slug+"_guardian";
+      const bpHeader=makeUUID(),bpModule=makeUUID(),rpHeader=makeUUID(),rpModule=makeUUID();
+      const bpFiles=[],rpFiles=[];const desc=(project.description||"Created with HuluAI Mod Studio.").slice(0,500);
+      bpFiles.push(jsonFile("manifest.json",manifest(name+" Behavior Pack",desc,bpHeader,bpModule,"data",[{uuid:rpHeader,version:[1,0,0]}])));
+      rpFiles.push(jsonFile("manifest.json",manifest(name+" Resource Pack","Textures and visuals for "+name,rpHeader,rpModule,"resources")));
+      if(features.item){
+        bpFiles.push(jsonFile("items/"+slug+"_artifact.json",{format_version:"1.20.20","minecraft:item":{description:{identifier:itemId,menu_category:{category:"items"}},components:{"minecraft:display_name":{value:name+" Artifact"},"minecraft:max_stack_size":64,"minecraft:icon":{textures:{default:itemKey}}}}}));
+        rpFiles.push(jsonFile("textures/item_texture.json",{resource_pack_name:name,texture_name:"atlas.items",texture_data:{[itemKey]:{textures:"textures/items/"+slug+"_artifact"}}}));
+        rpFiles.push({name:"textures/items/"+slug+"_artifact.png",data:features.textures?pngTexture(16,"item"):pngTexture(16,"item")});
+        rpFiles.push({name:"texts/languages.json",data:JSON.stringify(["en_US"])});rpFiles.push({name:"texts/en_US.lang",data:"item."+itemId+".name="+name+" Artifact\n"});
+      }else{
+        // The resource pack still needs one valid texture atlas file only when an item is included.
+      }
+      if(features.recipe&&features.item){
+        bpFiles.push(jsonFile("recipes/"+slug+"_artifact.json",{format_version:"1.20.10", "minecraft:recipe_shaped":{description:{identifier:namespace+":"+slug+"_artifact_recipe"},tags:["crafting_table"],pattern:["ABA","BCB","ABA"],key:{A:{item:"minecraft:amethyst_shard"},B:{item:"minecraft:iron_ingot"},C:{item:"minecraft:diamond"}},result:{item:itemId,count:1}}}));
+      }
+      if(features.mob){
+        bpFiles.push(jsonFile("entities/"+mobKey+".json",{format_version:"1.20.80","minecraft:entity":{description:{identifier:mobId,is_spawnable:true,is_summonable:true,is_experimental:false},components:{"minecraft:type_family":{family:["mob","huluai_guardian"]},"minecraft:health":{value:24,max:24},"minecraft:movement":{"value":0.22},"minecraft:collision_box":{width:0.8,height:1.8},"minecraft:physics":{},"minecraft:pushable":{is_pushable:true,is_pushable_by_piston:true},"minecraft:nameable":{},"minecraft:movement.basic":{},"minecraft:navigation.walk":{"can_path_over_water":true,"avoid_water":false},"minecraft:behavior.float":{"priority":0},"minecraft:behavior.random_stroll":{"priority":6,"speed_multiplier":0.8},"minecraft:behavior.look_at_player":{"priority":7,"look_distance":8},"minecraft:behavior.random_look_around":{"priority":8}}}}));
+        rpFiles.push(jsonFile("entity/"+mobKey+".entity.json",{format_version:"1.10.0","minecraft:client_entity":{description:{identifier:mobId,materials:{default:"entity_alphatest"},textures:{default:"textures/entity/"+mobKey},geometry:{default:"geometry.huluai."+mobKey},render_controllers:["controller.render.default"],spawn_egg:{base_color:"#245b38",overlay_color:"#8cf0a5"}}}}));
+        rpFiles.push(jsonFile("models/entity/"+mobKey+".geo.json",{format_version:"1.12.0","minecraft:geometry":[{description:{identifier:"geometry.huluai."+mobKey,texture_width:64,texture_height:32,visible_bounds_width:2,visible_bounds_height:2,visible_bounds_offset:[0,0.5,0]},bones:[{name:"body",pivot:[0,0,0],cubes:[{origin:[-4,0,-4],size:[8,8,8],uv:[0,0]}]}]}]}));
+        rpFiles.push({name:"textures/entity/"+mobKey+".png",data:features.textures?pngTexture(64,"mob"):pngTexture(64,"mob")});
+      }
+      // Write a clear guide into each pack so future work is documented.
+      const blueprintNotes=["HuluAI Mod Studio starter pack", "Project: "+name, "Type: "+(project.type||"Custom Add-on"), "", "Project description:", desc, "", "Selected features:", ...Object.entries(features).map(([k,v])=>"- "+k+": "+(v?"selected":"not selected")), "", "Blueprint notes:", features.dimension?"- Custom dimension: concept recorded only; a complete dimension requires the current Bedrock Custom Dimension scripting workflow and supported experiments.":"- Custom dimension was not selected.", features.biomes?"- Biomes and structures: concept recorded only; no custom terrain/structure generation is included yet.":"- Biomes and structures were not selected.", "", "Test this pack in a disposable Minecraft Bedrock world first. This starter is generated locally and has not been tested in-game."].join("\n");
+      bpFiles.push({name:"HULUAI_README.txt",data:blueprintNotes});rpFiles.push({name:"HULUAI_README.txt",data:blueprintNotes});
+      const bpZip=zipStore(bpFiles),rpZip=zipStore(rpFiles);const addon=zipStore([{name:"HuluAI_Behavior.mcpack",data:bpZip},{name:"HuluAI_Resources.mcpack",data:rpZip}]);
+      downloadBlob(new Blob([addon],{type:"application/zip"}),slug+".mcaddon");
+      return {files:bpFiles.length+rpFiles.length,bytes:addon.length};
+    }
+    function downloadBlueprint(project){downloadJSON({app:"HuluAI Mod Studio",schemaVersion:1,...project,notes:{dimension:project.features?.dimension?"Concept only; custom dimension implementation not generated.":"Not selected",biomesAndStructures:project.features?.biomes?"Concept only; terrain and structure files not generated.":"Not selected"}},slugify(project.name)+"-blueprint.json");}
+    async function handleSubmit(event){event.preventDefault();if(currentMode==="post"){
+      const title=safeText($("projectName").value,70),description=safeText($("projectDescription").value,4000);if(!title||!description){showStatus("Please enter a title and description.",true);return;}
+      const posts=readStorage(STORAGE_POSTS);posts.push({id:makeUUID(),title,description,createdAt:new Date().toISOString()});writeStorage(STORAGE_POSTS,posts);renderCommunity();showStatus("Post draft saved in this browser. It is not public yet.");return;
+    }
+    let project;try{project=buildProjectFromForm();}catch(error){showStatus(error.message,true);return;}
+    saveProject(project);
+    const button=$("generateButton");button.disabled=true;button.textContent="Building starter pack…";
+    try{const result=await generateAddon(project);showStatus("Starter .mcaddon downloaded! Packaged "+result.files+" files ("+Math.ceil(result.bytes/1024)+" KB). The project blueprint is also saved locally. Dimensions, biomes, and structures are documented in the blueprint/README but are not implemented as gameplay systems yet.");}
+    catch(error){showStatus("The blueprint was saved, but the .mcaddon export failed: "+(error.message||String(error)),true);}
+    finally{button.disabled=false;button.textContent="Generate & Download .mcaddon";updateProjectCount();}
+    }
+    function openCommunityDraft(){openCreator("post");$("projectType").value="Complete Add-on — Create Everything";}
+    // Events
+    $("everythingButton").addEventListener("click",()=>openCreator("everything"));$("heroCreate").addEventListener("click",()=>openCreator("everything"));$("createButton")?.addEventListener("click",()=>openCreator("create"));
+    $("heroExplore").addEventListener("click",()=>$("discover").scrollIntoView({behavior:"smooth"}));$("communityJump").addEventListener("click",()=>$("community").scrollIntoView({behavior:"smooth"}));
+    $("search").addEventListener("input",renderIdeas);$("clearSearch").addEventListener("click",()=>{$("search").value="";renderIdeas();$("search").focus();});
+    document.querySelectorAll(".chip").forEach(chip=>chip.addEventListener("click",()=>{document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));chip.classList.add("active");selectedCategory=chip.dataset.category;renderIdeas();}));
+    $("postButton").addEventListener("click",openCommunityDraft);$("creatorForm").addEventListener("submit",handleSubmit);
+    $("saveBlueprintButton").addEventListener("click",()=>{if(currentMode==="post"){showStatus("Use Save Post Draft to save a community idea.",true);return;}const project=saveBlueprintFromForm();if(project)downloadBlueprint(project);});
+    $("closeModal").addEventListener("click",closeCreator);$("cancelButton").addEventListener("click",closeCreator);creatorModal.addEventListener("click",e=>{if(e.target===creatorModal)closeCreator();});
+    $("projectsButton").addEventListener("click",openProjects);$("closeProjects").addEventListener("click",closeProjects);$("closeProjectsBottom").addEventListener("click",closeProjects);projectsModal.addEventListener("click",e=>{if(e.target===projectsModal)closeProjects();});
+    $("exportAllButton").addEventListener("click",()=>downloadJSON(readStorage(STORAGE_PROJECTS),"huluai-mod-studio-projects.json"));
+    $("loginButton").addEventListener("click",()=>alert("A real account system is not connected yet. Your saved projects currently stay in this browser. We can add secure accounts and cloud storage in a later phase."));
+    document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeCreator();closeProjects();}});
+    renderIdeas();renderCommunity();updateProjectCount();
+  </script>
 </body>
-
 </html>
